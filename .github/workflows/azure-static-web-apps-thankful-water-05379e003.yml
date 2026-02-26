@@ -64,6 +64,7 @@ jobs:
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v10
         with:
-          configPath: ./lighthouserc.json   # fichier de config avec assertions
+          configPath: ./src/frontend/lighthouserc.json  
           uploadArtifacts: false
+
 
