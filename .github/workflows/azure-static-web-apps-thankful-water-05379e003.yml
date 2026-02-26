@@ -15,11 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
+      # Checkout
       - uses: actions/checkout@v3
         with:
           submodules: true
           lfs: false
 
+      # Vérification index.html
       - name: Vérifier la présence du fichier index.html
         run: |
           if [ -f src/frontend/index.html ]; then
@@ -29,6 +31,7 @@ jobs:
             exit 1
           fi
 
+      # Build & Deploy
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -40,11 +43,12 @@ jobs:
           api_location: ""
           output_location: "."
 
+      # Attente du site disponible
       - name: Attendre que le site soit disponible
         run: |
           echo "Attente du déploiement..."
           for i in {1..20}; do
-            if curl -s -o /dev/null -w "%{http_code}" https://thankful-water-05379e003.1.azurestaticapps.net | grep "200"; then
+            if curl -s -o /dev/null -w "%{http_code}" https://thankful-water-05379e003.1.azurestaticapps.net/ | grep "200"; then
               echo "Site disponible "
               break
             fi
@@ -52,9 +56,11 @@ jobs:
             sleep 15
           done
 
-      - name: Vérifier l’URL avant Lighthouse
+      # Vérifier l'URL avant Lighthouse
+      - name: Tester l'URL avant Lighthouse
         run: curl -I https://thankful-water-05379e003.1.azurestaticapps.net/
 
+      # Lighthouse CI
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v10
         with:
@@ -62,6 +68,7 @@ jobs:
             https://thankful-water-05379e003.1.azurestaticapps.net/
           uploadArtifacts: true
           temporaryPublicStorage: true
+          artifactName: lighthouse_results   # <-- nom d'artefact valide
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
