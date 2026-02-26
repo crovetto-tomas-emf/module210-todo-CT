@@ -49,7 +49,7 @@ jobs:
           echo "Attente du déploiement..."
           for i in {1..20}; do
             if curl -s -o /dev/null -w "%{http_code}" https://thankful-water-05379e003.1.azurestaticapps.net/ | grep "200"; then
-              echo "Site disponible "
+              echo "Site disponible ✅"
               break
             fi
             echo "Pas encore prêt... nouvelle tentative"
@@ -60,23 +60,9 @@ jobs:
       - name: Tester l'URL avant Lighthouse
         run: curl -I https://thankful-water-05379e003.1.azurestaticapps.net/
 
-      # Lighthouse CI (sans artefact GitHub pour éviter erreur)
+      # Lighthouse CI avec assertions
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v10
         with:
-          urls: |
-            https://thankful-water-05379e003.1.azurestaticapps.net/
-          uploadArtifacts: false   # <-- pas d’artefact pour éviter l’erreur 400
-          temporaryPublicStorage: true
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_THANKFUL_WATER_05379E003 }}
-          action: "close"
+          configPath: ./lighthouserc.json   # fichier de config avec assertions
+          uploadArtifacts: false
