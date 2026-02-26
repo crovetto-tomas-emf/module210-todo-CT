@@ -68,7 +68,7 @@ jobs:
             https://thankful-water-05379e003.1.azurestaticapps.net/
           uploadArtifacts: true
           temporaryPublicStorage: true
-          artifactName: lighthouseResults  
+          artifactName: lighthouseresults  
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -81,4 +81,5 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_THANKFUL_WATER_05379E003 }}
           action: "close"
+
 
