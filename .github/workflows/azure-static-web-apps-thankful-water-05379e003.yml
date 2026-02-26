@@ -40,11 +40,26 @@ jobs:
           api_location: ""
           output_location: "."
 
+      - name: Attendre que le site soit disponible
+        run: |
+          echo "Attente du déploiement..."
+          for i in {1..20}; do
+            if curl -s -o /dev/null -w "%{http_code}" https://thankful-water-05379e003.1.azurestaticapps.net | grep "200"; then
+              echo "Site disponible "
+              break
+            fi
+            echo "Pas encore prêt... nouvelle tentative"
+            sleep 15
+          done
+
+      - name: Vérifier l’URL avant Lighthouse
+        run: curl -I https://thankful-water-05379e003.1.azurestaticapps.net/
+
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v10
         with:
           urls: |
-            https://thankful-water-05379e003.azurestaticapps.net
+            https://thankful-water-05379e003.1.azurestaticapps.net/
           uploadArtifacts: true
           temporaryPublicStorage: true
 
