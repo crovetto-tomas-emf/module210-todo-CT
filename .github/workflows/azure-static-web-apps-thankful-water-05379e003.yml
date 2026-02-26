@@ -49,7 +49,7 @@ jobs:
           echo "Attente du déploiement..."
           for i in {1..20}; do
             if curl -s -o /dev/null -w "%{http_code}" https://thankful-water-05379e003.1.azurestaticapps.net/ | grep "200"; then
-              echo "Site disponible ✅"
+              echo "Site disponible "
               break
             fi
             echo "Pas encore prêt... nouvelle tentative"
@@ -64,5 +64,13 @@ jobs:
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v10
         with:
-          configPath: ./lighthouserc.json   # fichier de config avec assertions
+          configPath: ./.lighthouserc.json
           uploadArtifacts: false
+
+
+
+
+
+
+
+
